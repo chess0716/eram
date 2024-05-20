@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import '../../styles/Profile/MyPageProfile.scss';
-import ImgModal from '../ImgModal';  // 수정된 경로
+import { faPen } from '@fortawesome/free-solid-svg-icons';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen } from '@fortawesome/free-solid-svg-icons';
+
+import ImgModal from '../ImgModal';  // 수정된 경로
+
 import store from '../../store';
 import Img from '../../public/img1.jpg';
 

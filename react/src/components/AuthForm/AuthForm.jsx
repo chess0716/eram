@@ -60,6 +60,10 @@ function AuthForm() {
     setIsRightPanelActive(isSignUp);
   };
 
+  const handleForgotPassword = () => {
+    // 비밀번호 찾기 로직 추가
+  };
+
   return (
     <div className={styles.authForm}>
       <div
@@ -124,7 +128,7 @@ function AuthForm() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <a href="#">Forgot your password?</a>
+              <button type="button" onClick={handleForgotPassword}>Forgot your password?</button>
               <button type="submit" disabled={loading}>
                 Sign In
               </button>

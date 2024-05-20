@@ -1,7 +1,7 @@
 package com.demo.gram.controller;
 
-
 import com.demo.gram.dto.MembersDTO;
+import com.demo.gram.entity.Members;
 import com.demo.gram.service.MembersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -50,5 +51,17 @@ public class MembersController {
     return new ResponseEntity<>(membersService.getAll(), HttpStatus.OK);
   }
 
+  @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
+  @CrossOrigin(origins = "http://localhost:3000")
+  public ResponseEntity<Members> getCurrentUser(Principal principal) {
+    log.info("getCurrentUser...");
 
+    if (principal == null) {
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
+    String email = principal.getName(); // 현재 인증된 사용자의 이메일을 얻음
+    Members user = membersService.findByEmail(email);
+    return new ResponseEntity<>(user, HttpStatus.OK);
+  }
 }

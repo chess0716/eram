@@ -15,22 +15,20 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@types/stompjs": "^2.3.9",
     "axios": "^1.7.0",
-    "install": "^0.13.0",
     "jwt-decode": "^3.1.2",
     "mobx": "^6.6.0",
     "mobx-react": "^7.5.0",
-    "npm": "^10.8.0",
-    "react": "^18.3.1",
+    "react": "^18.2.0",
     "react-chat-elements": "^12.0.14",
-    "react-dom": "^18.3.1",
+    "react-dom": "^18.2.0",
     "react-hook-form": "^7.30.0",
     "react-icons": "^5.2.1",
     "react-responsive": "^9.0.0-beta.8",
     "react-router-dom": "^6.23.1",
     "react-scripts": "^5.0.1",
     "sass": "^1.51.0",
-    "scss": "^0.2.4",
     "sendbird": "^3.1.33",
     "sockjs-client": "^1.6.1",
     "styled-reset": "^4.3.4",
@@ -42,15 +40,14 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint './src/**/*.{js,jsx}'",
-    "lint:fix": "eslint --fix './src/**/*.{js,jsx}'",
-    "prettier": "prettier --write './src/**/*.{js,jsx}'",
-    "prepare": "cd ../ && husky install ./front/.husky",
+    "lint": "eslint './src/**/*.{js,jsx,ts,tsx}'",
+    "lint:fix": "eslint --fix './src/**/*.{js,jsx,ts,tsx}'",
+    "prettier": "prettier --write './src/**/*.{js,jsx,ts,tsx}'",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
   "lint-staged": {
-    "*.{js,jsx}": [
+    "*.{js,jsx,ts,tsx}": [
       "prettier --write",
       "eslint --fix"
     ]
@@ -58,8 +55,53 @@
   "eslintConfig": {
     "extends": [
       "react-app",
-      "react-app/jest"
-    ]
+      "react-app/jest",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:prettier/recommended"
+    ],
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "rules": {
+      "no-unused-vars": "off",
+      "import/no-unresolved": "off",
+      "import/no-extraneous-dependencies": "off",
+      "no-console": "off",
+      "no-shadow": "off",
+      "no-alert": "off",
+      "class-methods-use-this": "off",
+      "react-hooks/exhaustive-deps": "off",
+      "react/prop-types": "off",
+      "jsx-a11y/click-events-have-key-events": "off",
+      "jsx-a11y/no-noninteractive-element-interactions": "off",
+      "react/no-array-index-key": "off",
+      "react/jsx-props-no-spreading": "off",
+      "no-unused-expressions": "off",
+      "no-nested-ternary": "off",
+      "jsx-a11y/no-static-element-interactions": "off",
+      "react/jsx-filename-extension": [
+        1,
+        {
+          "extensions": [
+            ".js",
+            ".jsx",
+            ".ts",
+            ".tsx"
+          ]
+        }
+      ],
+      "@typescript-eslint/no-use-before-define": [
+        "error"
+      ],
+      "@typescript-eslint/no-unused-vars": [
+        "error"
+      ]
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    }
   },
   "browserslist": {
     "production": [
@@ -76,7 +118,6 @@
   "devDependencies": {
     "@fortawesome/free-brands-svg-icons": "^6.1.1",
     "@stomp/stompjs": "^7.0.0",
-    "@types/axios": "^0.14.0",
     "@types/node": "^20.12.12",
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.3.0",

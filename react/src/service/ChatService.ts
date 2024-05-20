@@ -9,12 +9,12 @@ const axiosInstance = axios.create({
   }
 });
 
-interface ChatRoomResponse {
+export interface ChatRoomResponse {
   chatRoomId: string;
   postId: number;
 }
 
-interface ChatMessage {
+export interface ChatMessage {
   id: number;
   chatRoomId: number;
   senderId: number;
@@ -23,7 +23,7 @@ interface ChatMessage {
   token?: string;
 }
 
-interface Members {
+export interface Members {
   mno: number;
   id: string;
   name: string;
