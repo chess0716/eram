@@ -1,0 +1,48 @@
+.write_container {
+	background-color: #ffffff;
+	border-radius: 30px;
+	display: flex;
+	flex-direction: column;
+	margin: 30px auto;
+	padding: 30px 40px;
+	// width: 800px;
+	width: 70%;
+	box-sizing: border-box;
+	box-shadow: 2px 2px 2px #e1e1e1;
+}
+
+.write_title {
+	background: none;
+	font-size: 20px;
+	font-weight: 600;
+	color: #2F1154;
+}
+
+
+.write_content {
+	background: none;
+	resize: none;
+	font-size: 20px;
+	height: 500px;
+	color: #2F1154;
+}
+
+.write_style {
+	outline: none;
+	border-style: none;
+	border-bottom: solid 2px #4A3763;
+	width: 95%;
+	padding: 20px;
+}
+
+.write_post {
+	background-color: #A171FF;
+	cursor: pointer;
+	color: white;
+	border-style: none;
+	border-radius: 15px;
+	font-size: 16px;
+	padding: 10px 15px;
+	float: right;
+	margin-top: 20px;
+}

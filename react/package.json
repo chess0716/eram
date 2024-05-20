@@ -1,0 +1,99 @@
+{
+  "name": "elicesw2-project2",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@chatscope/chat-ui-kit-react": "^2.0.3",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@fortawesome/fontawesome-svg-core": "^6.1.1",
+    "@fortawesome/free-regular-svg-icons": "^6.1.1",
+    "@fortawesome/free-solid-svg-icons": "^6.1.1",
+    "@fortawesome/react-fontawesome": "^0.1.18",
+    "@mui/material": "^5.15.16",
+    "@sendbird/uikit-react": "^3.14.6",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.7.0",
+    "install": "^0.13.0",
+    "jwt-decode": "^3.1.2",
+    "mobx": "^6.6.0",
+    "mobx-react": "^7.5.0",
+    "npm": "^10.8.0",
+    "react": "^18.3.1",
+    "react-chat-elements": "^12.0.14",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.30.0",
+    "react-icons": "^5.2.1",
+    "react-responsive": "^9.0.0-beta.8",
+    "react-router-dom": "^6.23.1",
+    "react-scripts": "^5.0.1",
+    "sass": "^1.51.0",
+    "scss": "^0.2.4",
+    "sendbird": "^3.1.33",
+    "sockjs-client": "^1.6.1",
+    "styled-reset": "^4.3.4",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "github:build": "react-scripts build && rm -rf ../docs && mv build ../docs",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint './src/**/*.{js,jsx}'",
+    "lint:fix": "eslint --fix './src/**/*.{js,jsx}'",
+    "prettier": "prettier --write './src/**/*.{js,jsx}'",
+    "prepare": "cd ../ && husky install ./front/.husky",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@fortawesome/free-brands-svg-icons": "^6.1.1",
+    "@stomp/stompjs": "^7.0.0",
+    "@types/axios": "^0.14.0",
+    "@types/node": "^20.12.12",
+    "@types/react": "^18.3.2",
+    "@types/react-dom": "^18.3.0",
+    "@types/react-router-dom": "^5.3.3",
+    "@types/sockjs-client": "^1.5.4",
+    "eslint": "^8.14.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-react-hooks": "^4.4.0",
+    "gh-pages": "^3.2.3",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.4.1",
+    "prettier": "^2.6.2",
+    "typescript": "^4.9.5"
+  },
+  "homepage": "http://localhost:3000/eram"
+}
