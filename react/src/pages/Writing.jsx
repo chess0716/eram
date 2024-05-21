@@ -1,7 +1,11 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Pages/Writing.scss';
+import ReactQuill from 'react-quill';
 import store from '../store';
+import { modules, formats } from '../constants/editor';
+import { createPost } from '../service/PostService';
+import UserService from '../service/UserService';
 
 export default function Writing() {
 	return <WriteContent />;
@@ -12,22 +16,49 @@ function WriteContent() {
 	const navigate = useNavigate();
 	const titleRef = useRef(null);
 	const contentRef = useRef(null);
-	const nickName = UserStore.nickname;
+	const endDateRef = useRef(null);
+	const [numberOfUsers, setNumberOfUsers] = useState('');
+	const [user, setUser] = useState(null);
+	const { nickname: nickName } = UserStore; // 이미 구조 분해 할당이 사용됨
+
 	const today = new Date();
-	const Time = {
+	const { year, month, day } = {
 		year: today.getFullYear(),
 		month: today.getMonth() + 1,
 		day: today.getDate(),
 	};
-	if (Time.month < 10) {
-		Time.month = 0 + String(Time.month);
+
+	const formattedMonth = month < 10 ? `0${month}` : month;
+	const formattedDay = day < 10 ? `0${day}` : day;
+	const time = `${year}-${formattedMonth}-${formattedDay}`;
+
+	// 페이지 로드 시 로그인한 사용자 정보를 불러옵니다.
+	useEffect(() => {
+		const fetchUser = async () => {
+			try {
+				const currentUser = await UserService.getCurrentUser();
+				console.log('로그인유저: ', currentUser);
+				setUser(currentUser);
+			} catch (error) {
+				console.error('Failed to load user info:', error);
+			}
+		};
+
+		fetchUser();
+	}, []);
+
+	function handleNumberOfUsersChange(e) {
+		const num = e.target.value;
+		if (num === '' || /^\d+$/.test(num)) {
+			setNumberOfUsers(num);
+		}
 	}
-	if (Time.day < 10) {
-		Time.day = 0 + String(Time.day);
-	}
-	const time = `${Time.year}-${Time.month}-${Time.day}`;
 
 	function storySubmit(e) {
+		if (!user) {
+			alert('사용자 정보를 불러오는 중 오류가 발생했습니다. 다시 로그인 해주세요.');
+			return;
+		}
 		// 글 작성 게시 버튼 누르면 동작
 		e.preventDefault();
 		if (titleRef.current.value.length === 0) {
@@ -38,38 +69,62 @@ function WriteContent() {
 			alert('내용을 입력해주세요.');
 			return;
 		}
+		if (numberOfUsers === '') {
+			alert('방 인원을 입력해주세요.');
+			return;
+		}
 
-		fetch('https://elice-server.herokuapp.com/board', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				nickname: nickName,
-				id: localStorage.getItem('id'),
-				title: titleRef.current.value,
-				content: contentRef.current.value,
-				date: time,
-			}),
-		})
-			.then((res) => res.json())
-			.then((data) => {
-				navigate(`/page=1/Read=${data.data.post_idx}`);
+		const { mno } = user;
+
+		const postData = {
+			mno,
+			title: titleRef.current.value,
+			content: contentRef.current.value,
+			endDate: endDateRef.current.value,
+			numberOfUsers: parseInt(numberOfUsers, 10),
+			viewCount: 0,
+		};
+
+		createPost(postData)
+			.then((response) => {
+				navigate(`/page=1/Read=${response.data.data.post_idx}`);
+			})
+			.catch((error) => {
+				console.error('게시글 등록 실패:', error);
+				alert('게시글 등록에 실패했습니다.');
 			});
 	}
+
 	return (
 		<section className="write_container">
-			<form>
+			<form className="editor-container">
+				&nbsp;&nbsp;&nbsp; 끝나는 날짜 &nbsp; <input type="date" name="endDate" ref={endDateRef} />
+				<input
+					type="text"
+					name="numberOfUsers"
+					className="userNumber"
+					placeholder="방 인원(숫자만)"
+					value={numberOfUsers}
+					onChange={handleNumberOfUsersChange}
+				/>
 				<input type="text" placeholder="제목을 입력하세요" className="write_title write_style" ref={titleRef} />
 				<div />
-				<textarea
-					id="writing_textarea"
-					className="write_content write_style"
-					cols="30"
-					rows="10"
-					placeholder="내용을 입력하세요"
-					ref={contentRef}
-				/>
-				<input type="submit" className="write_post" value="글 등록" onClick={storySubmit} />
+				<div>
+					<ReactQuill
+						style={{ width: '830px', height: '400px' }}
+						modules={modules}
+						formats={formats}
+						value={contentRef.current ? contentRef.current.value : ''}
+						onChange={(value) => {
+							if (contentRef.current) {
+								contentRef.current.value = value;
+							}
+						}}
+						placeholder="내용을 입력해주세요."
+					/>
+				</div>
 			</form>
+			<input type="submit" className="write_post" value="글 등록" onClick={storySubmit} />
 		</section>
 	);
 }

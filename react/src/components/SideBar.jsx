@@ -10,22 +10,21 @@ function SideBar() {
 			<h2>바로가기</h2>
 			<div className="link">
 				<p id="link1">
-					<a href="http://localhost:3000/eram/page=1">SideBar1</a>
+					<a href="http://localhost:3000/eram/chat">채팅방가기</a>
 				</p>
 				<p id="link2">
-					<a href="http://localhost:3000/eram/page=1">SideBar1</a>
+					<a href="http://localhost:3000/eram/posts">SideBar1</a>
 				</p>
 				<p id="link3">
-					<a href="http://localhost:3000/eram/page=1">SideBar1 &rarr;</a>
+					<a href="http://localhost:3000/eram/posts">SideBar1 &rarr;</a>
 				</p>
-			</div>
-
-			<div className="git">
-				{/* <FontAwesomeIcon icon={faGithub} className="gitIcon" /> */}
-				<a href="http://localhost:3000/eram">Main</a>
-			</div>
-			<div className="footer">
-				<p>© 2024 ERaM</p>
+				<div className="git">
+					{/* <FontAwesomeIcon icon={faGithub} className="gitIcon" /> */}
+					<a href="http://localhost:3000/eram">Main</a>
+				</div>
+				<div className="footer">
+					<p>© 2024 ERaM</p>
+				</div>
 			</div>
 		</div>
 	);

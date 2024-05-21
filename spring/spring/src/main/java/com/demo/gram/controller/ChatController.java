@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/chat")
@@ -99,6 +100,15 @@ public class ChatController {
     }
     List<MembersDTO> members = membersService.getChatRoomMembers(chatRoomId);
     return members;
+  }
+
+  @GetMapping("/chatroom/{chatRoomId}/messages")
+  public ResponseEntity<List<ChatMessageDTO>> getMessagesByChatRoomId(@PathVariable Long chatRoomId) {
+    List<ChatMessageDTO> messages = chatMessageRepository.findByChatRoomId(chatRoomId)
+        .stream()
+        .map(ChatMessage::toDTO)
+        .collect(Collectors.toList());
+    return ResponseEntity.ok(messages);
   }
 
   private String convertToJson(Object object) {

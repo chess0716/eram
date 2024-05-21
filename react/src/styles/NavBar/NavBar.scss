@@ -30,60 +30,89 @@
 	font-family: 'Lobster', cursive;
 }
 
+.navItems {
+	display: flex;
+	align-items: center;
+}
+
 .navItem {
 	padding: 6px 12px;
 	margin: 0 4px;
 	cursor: pointer;
 	border-radius: 4px;
 	font-size: 20px;
-	.navItem__menu-container {
-		position: relative;
+	display: flex;
+	align-items: center;
+	a {
+		color: inherit;
+		text-decoration: none;
+		display: flex;
+		align-items: center;
 	}
+}
 
-	img {
-		border-radius: 50%;
-		margin-top: 5px;
-		width: 35px;
-		height: 35px;
-	}
+.navItem__menu-container {
+	position: relative;
+}
 
-	.menu {
-		background: #ffffff;
-		border-radius: 8px;
+.navItem__trigger {
+	border-radius: 50%;
+	margin-top: 5px;
+	width: 35px;
+	height: 35px;
+	cursor: pointer;
+}
+
+.menu {
+	background: #ffffff;
+	border-radius: 8px;
+	position: absolute;
+	top: 52px;
+	right: 0;
+	width: 200px;
+	box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+	z-index: 1000;
+	opacity: 80%;
+	.menu__square {
 		position: absolute;
-		top: 52px;
-		right: -27px;
-		width: 200px;
-		box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
-		z-index: 999;
-		opacity: 80%;
-		.menu__square {
-			position: absolute;
-			left: 147px;
-			top: -9px;
-			width: 15px;
-			height: 15px;
-			border: 1px solid rgba(0, 0, 0, 0.15);
-			background-color: white;
-			border-bottom: none;
-			border-right: none;
-			transform: rotate(45deg);
-		}
+		left: 80%;
+		top: -9px;
+		width: 15px;
+		height: 15px;
+		border: 1px solid rgba(0, 0, 0, 0.15);
+		background-color: white;
+		border-bottom: none;
+		border-right: none;
+		transform: rotate(45deg);
+	}
 
-		li {
-			font-size: 16px;
-			line-height: 18px;
-			text-decoration: none;
-			color: #2f1154;
-			padding: 15px 20px;
-			display: block;
+	li {
+		font-size: 16px;
+		line-height: 18px;
+		text-decoration: none;
+		color: #2f1154;
+		padding: 15px 20px;
+		display: block;
 
-			.menu__icon {
-				margin-right: 10px;
-			}
-		}
-		.menu__mypage {
-			border-bottom: 1.5px #d9c9f8 solid;
+		.menu__icon {
+			margin-right: 10px;
 		}
 	}
+	.menu__mypage {
+		border-bottom: 1.5px #d9c9f8 solid;
+	}
+}
+
+.navItem button {
+	background-color: transparent;
+	border: none;
+	color: #4a3763;
+	font-size: 20px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+}
+
+.navItem button .menu__icon {
+	margin-right: 8px;
 }

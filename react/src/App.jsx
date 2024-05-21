@@ -15,7 +15,7 @@ import Writing from './pages/Writing';
 import WritePut from './pages/WritePut';
 import Places from './components/Places/Places';
 import DetailPage from './components/Event/DetailPage';
-import ChatRoom from './components/ChatRoom/ChatRoom.tsx'; // Correct import
+import ChatRoom from './components/ChatRoom/ChatRoom'; // Correct import
 
 function App() {
   const navigate = useNavigate();

@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import SockJS from 'sockjs-client';
-import { Client, IMessage } from '@stomp/stompjs';
+import { Client } from '@stomp/stompjs';
 import jwtDecode from 'jwt-decode';
 import {
   MainContainer,
@@ -10,23 +10,21 @@ import {
   Message,
   MessageInput,
   Sidebar,
-  ConversationHeader,
-  Avatar,
   ConversationList,
   Conversation,
 } from '@chatscope/chat-ui-kit-react';
-import { getChatRoomByPostId, getMessagesByRoomId, getMembersByRoomId, Members } from '../../service/ChatService';
+import { getChatRoomByPostId, getMessagesByRoomId, getMembersByRoomId } from '../../service/ChatService';
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 
 function ChatRoom() {
-  const { postId } = useParams<{ postId: string }>();
-  const [messages, setMessages] = useState<any[]>([]);
-  const [members, setMembers] = useState<Members[]>([]);
-  const [chatRoomId, setChatRoomId] = useState<string | null>(null);
-  const clientRef = useRef<Client | null>(null);
-  const [currentUser, setCurrentUser] = useState<Members | null>(null);
+  const { postId } = useParams();
+  const [messages, setMessages] = useState([]);
+  const [members, setMembers] = useState([]);
+  const [chatRoomId, setChatRoomId] = useState(null);
+  const clientRef = useRef(null);
+  const [currentUser, setCurrentUser] = useState(null);
 
-  const setupWebSocket = (roomId: string) => {
+  const setupWebSocket = (roomId) => {
     if (clientRef.current) {
       clientRef.current.deactivate();
     }
@@ -36,14 +34,19 @@ function ChatRoom() {
       webSocketFactory: () => socket,
       reconnectDelay: 10000,
       onConnect: () => {
-        stompClient.subscribe(`/topic/chat/${roomId}`, (message: IMessage) => {
+        stompClient.subscribe(`/topic/chat/${roomId}`, (message) => {
           const receivedMessage = JSON.parse(message.body);
-          if (receivedMessage.senderId !== currentUser?.mno) {
-            setMessages((prev) => [...prev, { ...receivedMessage, direction: 'incoming', position: 'normal' }]);
-          }
+          setMessages((prev) => [
+            ...prev,
+            {
+              ...receivedMessage,
+              direction: receivedMessage.senderId === currentUser?.mno ? 'outgoing' : 'incoming',
+              position: 'normal',
+            },
+          ]);
         });
 
-        stompClient.subscribe(`/topic/chat/${roomId}/members`, (message: IMessage) => {
+        stompClient.subscribe(`/topic/chat/${roomId}/members`, (message) => {
           const updatedMembers = JSON.parse(message.body);
           setMembers(updatedMembers);
         });
@@ -65,32 +68,22 @@ function ChatRoom() {
   useEffect(() => {
     const loadChatRoom = async () => {
       try {
-        const { data: roomData } = await getChatRoomByPostId(postId!);
+        const { data: roomData } = await getChatRoomByPostId(postId);
         if (roomData.chatRoomId) {
           setChatRoomId(roomData.chatRoomId);
-
-          const { data: messagesData } = await getMessagesByRoomId(roomData.chatRoomId);
-          setMessages(
-            messagesData.map((msg: any) => ({
-              ...msg,
-              direction: msg.senderId === currentUser?.mno ? 'outgoing' : 'incoming',
-              position: 'normal',
-            }))
-          );
 
           const { data: membersData } = await getMembersByRoomId(roomData.chatRoomId);
           setMembers(membersData);
 
           const token = localStorage.getItem('accessToken');
           if (token) {
-            const decodedToken = jwtDecode<{ sub: string }>(token);
+            const decodedToken = jwtDecode(token);
             const email = decodedToken.sub;
-            const currentUser = membersData.find((member: Members) => member.email === email);
-            if (currentUser) {
-              setCurrentUser(currentUser);
+            const user = membersData.find((member) => member.email === email);
+            if (user) {
+              setCurrentUser(user);
             }
           }
-          setupWebSocket(roomData.chatRoomId);
         } else {
           console.error('Chat room not found for the provided post ID');
         }
@@ -106,29 +99,46 @@ function ChatRoom() {
         clientRef.current.deactivate();
       }
     };
-  }, [postId, currentUser?.mno]);
+  }, [postId]);
 
   useEffect(() => {
-    if (chatRoomId) {
+    if (chatRoomId && currentUser) {
+      const loadMessages = async () => {
+        try {
+          const { data: messagesData } = await getMessagesByRoomId(chatRoomId);
+          setMessages(
+            messagesData.map((msg) => ({
+              ...msg,
+              direction: msg.senderName === currentUser.name ? 'outgoing' : 'incoming',
+              position: 'normal',
+            }))
+          );
+        } catch (error) {
+          console.error('Error fetching messages:', error);
+        }
+      };
+
+      loadMessages();
       setupWebSocket(chatRoomId);
     }
+
     return () => {
       if (clientRef.current) {
         clientRef.current.deactivate();
       }
     };
-  }, [chatRoomId, currentUser?.mno]);
+  }, [chatRoomId, currentUser]);
 
-  const sendMessage = async (input: string) => {
+  const sendMessage = async (input) => {
     if (input.trim() && clientRef.current && clientRef.current.connected && chatRoomId && currentUser) {
       const token = localStorage.getItem('accessToken') || '';
-      const messageData = { message: input, token };
+      const messageData = { message: input, token, senderName: currentUser.name, senderId: currentUser.mno };
       try {
         clientRef.current.publish({
           destination: `/app/chat/${chatRoomId}/send`,
           body: JSON.stringify(messageData),
         });
-        setMessages((prev) => [...prev, { message: input, direction: 'outgoing', senderName: currentUser.name, position: 'normal' }]);
+        // 메시지를 직접 추가하지 않음
       } catch (error) {
         console.error('Error sending message:', error);
       }
@@ -140,12 +150,9 @@ function ChatRoom() {
       <MainContainer className="main-container">
         <Sidebar position="left" scrollable className="custom-sidebar">
           <ConversationList>
-            <ConversationHeader>
-              <ConversationHeader.Content userName="User list" />
-            </ConversationHeader>
             {members.map((member) => (
               <Conversation key={member.mno} name={member.name}>
-                <Avatar name={member.name} />
+                {/* <Avatar name={member.name} /> */}
               </Conversation>
             ))}
           </ConversationList>
@@ -156,7 +163,7 @@ function ChatRoom() {
               <Message
                 key={index}
                 model={{
-                  message: msg.message,
+                  message: `${msg.senderName}: ${msg.message}`,
                   direction: msg.direction,
                   sender: msg.senderName,
                   position: 'normal',

@@ -1,9 +1,10 @@
 import axios from 'axios';
+import UserStore from '../../store/UserStore'; // UserStore 가져오기
 import AuthService from './AuthService';
 
-const API_URL = 'http://localhost:8005'; // 서버의 주소와 포트
+const API_URL = 'http://localhost:8089'; // 서버의 주소와 포트
 
-const sendRequest = async (url, data, accessToken, method = 'get') => {
+const sendRequest = async (url, method = 'get', data = null, accessToken = null) => {
 	try {
 		const response = await axios({
 			url: `${API_URL}${url}`,
@@ -23,7 +24,7 @@ const sendRequest = async (url, data, accessToken, method = 'get') => {
 const UserService = {
 	updateUser: async (userData) => {
 		try {
-			return sendRequest('/members/update', userData, null, 'put');
+			return sendRequest('/members/update', 'put', userData);
 		} catch (error) {
 			console.error('Failed to update user:', error);
 			throw error;
@@ -32,7 +33,7 @@ const UserService = {
 
 	deleteUser: async (num) => {
 		try {
-			return sendRequest(`/members/delete/${num}`, null, null, 'delete');
+			return sendRequest(`/members/delete/${num}`, 'delete');
 		} catch (error) {
 			console.error('Failed to delete user:', error);
 			throw error;
@@ -63,7 +64,7 @@ const UserService = {
 			if (!accessToken) {
 				throw new Error('No access token found');
 			}
-			return sendRequest('/members/me', null, accessToken);
+			return sendRequest('/members/me', 'get', null, accessToken);
 		} catch (error) {
 			console.error('Failed to fetch current user:', error);
 			throw error;
@@ -76,7 +77,7 @@ const UserService = {
 			if (!accessToken) {
 				throw new Error('No access token found');
 			}
-			return sendRequest('/members/posts', null, accessToken);
+			return sendRequest('/members/posts', 'get', null, accessToken);
 		} catch (error) {
 			console.error('Failed to fetch current user posts:', error);
 			throw error;
@@ -89,7 +90,7 @@ const UserService = {
 			if (!accessToken) {
 				throw new Error('No access token found');
 			}
-			return sendRequest('/members/chatrooms', null, accessToken);
+			return sendRequest('/members/chatrooms', 'get', null, accessToken);
 		} catch (error) {
 			console.error('Failed to fetch current user chat rooms:', error);
 			throw error;
@@ -107,17 +108,9 @@ const UserService = {
 	logout: async () => {
 		try {
 			await AuthService.logout();
+			UserStore.reset();
 		} catch (error) {
 			console.error('Failed to logout:', error);
-			throw error;
-		}
-	},
-
-	deleteAccount: async () => {
-		try {
-			await AuthService.deleteAccount();
-		} catch (error) {
-			console.error('Failed to delete account:', error);
 			throw error;
 		}
 	},

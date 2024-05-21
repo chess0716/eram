@@ -44,20 +44,26 @@
 		display: flex;
 		flex-direction: column;
 		margin-right: 50px;
-		justify-content: center; /* 내용 가운데 정렬 추가 */
+		justify-content: center;
 
 		.items {
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			margin-bottom: 20px; /* 간격을 줄임 */
-			flex-grow: 1; /* 내부 요소들이 자리를 차지하도록 함 */
+			margin-bottom: 40px;
+			flex-grow: 15;
 
 			span {
 				margin-top: 7px;
 				font-size: 26px;
 				cursor: default;
 			}
+		}
+
+		.button-group {
+			display: flex;
+			flex-direction: column;
+			gap: 10px; /* 버튼 사이 간격 */
 		}
 
 		button {
@@ -73,7 +79,10 @@
 			font-weight: 600;
 			font-size: 14px;
 			font-family: 'Noto Sans KR', sans-serif;
-			margin-top: 10px;
+			margin: 0; /* margin을 제거 */
+			display: flex;
+			align-items: center; /* 수직 가운데 정렬 */
+			justify-content: center; /* 수평 가운데 정렬 */
 		}
 
 		.description {
@@ -104,25 +113,28 @@
 		}
 	}
 }
+
 .MyPageProfile__container__right2 {
 	width: 400px;
 	height: 100%;
 	display: flex;
 	flex-direction: column;
 	margin-right: 50px;
-	justify-content: center; /* 내용 가운데 정렬 추가 */
+	justify-content: center;
 
 	.items {
 		display: flex;
-		justify-content: space-between;
+		justify-content: start; /* 좌측 정렬 */
 		align-items: center;
-		margin-bottom: 20px; /* 간격을 줄임 */
-		flex-grow: 1; /* 내부 요소들이 자리를 차지하도록 함 */
+		margin-bottom: 20px;
+		flex-grow: 1;
 
 		span {
 			margin-top: 7px;
 			font-size: 26px;
 			cursor: default;
+			display: flex; /* flexbox를 사용하여 아이콘과 버튼을 한 줄로 정렬 */
+			align-items: center; /* 세로축 가운데 정렬 */
 		}
 	}
 
@@ -139,7 +151,10 @@
 		font-weight: 600;
 		font-size: 14px;
 		font-family: 'Noto Sans KR', sans-serif;
-		margin-top: 10px;
+		margin: 10px 0; /* 위아래 간격 조정 */
+		display: flex;
+		align-items: center; /* 수직 가운데 정렬 */
+		justify-content: center; /* 수평 가운데 정렬 */
 	}
 
 	.description {
@@ -167,5 +182,11 @@
 			display: block;
 			resize: none;
 		}
+	}
+
+	.iconImage {
+		width: 20px; /* 아이콘 이미지 크기를 적절하게 조정 */
+		height: 20px;
+		margin-right: 10px; /* 버튼과 이미지 사이의 간격 */
 	}
 }

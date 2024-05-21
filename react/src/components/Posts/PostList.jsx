@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import MainProfile from '../../Profile/MainProfile';
+import MainProfile from '../Profile/MainProfile';
 import Story from '../Story/Story';
-import SideBar from '../Bar/SideBar';
+import SideBar from '../SideBar';
 import '../../styles/Pages/MainPage.scss';
-import SearchBar from '../Bar/SearchBar';
+import SearchBar from '../SearchBar';
 
-import store from 'store';
+import store from '../../store';
 
 function PostList() {
 	const { UserStore } = store();
@@ -47,7 +47,7 @@ function PostList() {
 				<SearchBar />
 				<SideBar />
 				<ul>
-					{posts.map(post => (
+					{posts.map((post) => (
 						<li key={post.id}>
 							<Link to={`/posts/${post.id}`}>{post.title}</Link> - 작성일: {post.createdAt}
 						</li>

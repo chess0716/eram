@@ -6,37 +6,39 @@ import images from '../../constants/images';
 import styles from './Places.module.css';
 
 function Places() {
-    const [sports, setSports] = useState([]);
-    const navigate = useNavigate();
+	const [sports, setSports] = useState([]);
+	const navigate = useNavigate();
 
-    useEffect(() => {
-        const loadSports = async () => {
-            try {
-                const sportsData = await fetchSports();
-                console.log(sportsData);
-                setSports(sportsData);
-            } catch (error) {
-                console.error('Failed to load sports:', error);
-            }
-        };
+	useEffect(() => {
+		const loadSports = async () => {
+			try {
+				const sportsData = await fetchSports();
+				console.log(sportsData);
+				setSports(sportsData);
+			} catch (error) {
+				console.error('Failed to load sports:', error);
+			}
+		};
 
-        loadSports();
-    }, []);
+		loadSports();
+	}, []);
 
-    const handleItemClick = (id) => {
-        navigate(`/details/${id}`);
-    };
+	const handleItemClick = (id) => {
+		navigate(`/details/${id}`);
+	};
 
-    return (
-        <Grid container spacing={2} className={styles.work__content}>
-            {sports.map((sport, index) => (
-                <Grid item xs={12} sm={6} md={4} lg={3} key={sport.id} className={styles.work__content__item} onClick={() => handleItemClick(sport.id)}>
-                    <img src={images[`sport${index + 1}`]} alt={sport.name} />
-                    <h3>{sport.name}</h3>
-                </Grid>
-            ))}
-        </Grid>
-    );
+	return (
+		<Grid container spacing={2} className={styles.work__content}>
+			{sports.map((sport, index) => (
+				<Grid item xs={12} sm={6} md={4} lg={3} key={sport.id} onClick={() => handleItemClick(sport.id)}>
+					<div className={styles.work__content__item}>
+						<img src={images[`sport${index + 1}`]} alt={sport.name} />
+						<h3>{sport.name}</h3>
+					</div>
+				</Grid>
+			))}
+		</Grid>
+	);
 }
 
 export default Places;

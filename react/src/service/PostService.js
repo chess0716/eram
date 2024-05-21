@@ -4,7 +4,12 @@ const BASE_URL = 'http://localhost:8005'; // Spring Boot 서버의 포트
 
 export const getPosts = () => axios.get(`${BASE_URL}/posts`);
 
-export const getPostById = (id) => axios.get(`${BASE_URL}/posts/${id}`);
+export const getPostById = (id) => {
+  if (!id) {
+    throw new Error('ID is undefined');
+  }
+  return axios.get(`${BASE_URL}/posts/${id}`);
+};
 
 export const createPost = (postData) => axios.post(`${BASE_URL}/posts`, postData);
 
