@@ -1,0 +1,54 @@
+.write_container {
+	background-color: #ffffff;
+	border-radius: 30px;
+	display: flex;
+	flex-direction: column;
+	align-items: center; /* 추가: 모든 자식 요소를 수평 중앙으로 정렬 */
+	margin: 30px auto;
+	padding: 30px 40px;
+	width: 70%;
+	box-sizing: border-box;
+	box-shadow: 2px 2px 2px #e1e1e1;
+}
+
+.write_title {
+	background: none;
+	font-size: 20px;
+	font-weight: 600;
+	color: #2f1154;
+}
+
+.write_content {
+	background: none;
+	resize: none;
+	font-size: 20px;
+	height: 500px;
+	color: #2f1154;
+}
+
+.write_style {
+	outline: none;
+	border-style: none;
+	border-bottom: solid 2px #4a3763;
+	width: 95%;
+	padding: 20px;
+}
+
+.write_post {
+	background-color: #fff;
+	cursor: pointer;
+	color: #a171ff;
+	border: 2px solid #a171ff;
+	border-radius: 10px;
+	font-size: 16px;
+	font-weight: 600;
+	padding: 10px 20px;
+	margin-top: 70px;
+	width: fit-content;
+	align-self: center; /* 추가: 버튼을 수평 중앙으로 정렬 */
+}
+
+.write_post:hover {
+	background-color: #a171ff;
+	color: white;
+}
