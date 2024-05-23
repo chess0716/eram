@@ -1,74 +1,60 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/Story/MyStory.scss';
-import UserStore from '../../store/UserStore';
+import UserService from '../../service/UserService'; // UserService를 임포트
 
-function MyStory() {
-	const [board, setBoard] = useState([]);
+function MyChat() {
+    const [chatRooms, setChatRooms] = useState([]);
 
-	useEffect(() => {
-		const fetchPosts = async () => {
-			try {
-				const accessToken = localStorage.getItem('accessToken');
-				if (!accessToken) {
-					throw new Error('No access token found');
-				}
-				const userId = UserStore.id;
-				console.log(`Fetching posts for user ID: ${userId}`); // 추가된 로그
-				const response = await fetch(`/members/${userId}/posts`, {
-					method: 'GET',
-					headers: {
-						Authorization: `Bearer ${accessToken}`,
-					},
-				});
-				const contentType = response.headers.get('content-type');
-				if (!response.ok || !contentType || !contentType.includes('application/json')) {
-					throw new Error(`Failed to fetch posts, received: ${contentType}`);
-				}
-				const data = await response.json();
-				if (data) {
-					setBoard(data);
-				}
-			} catch (error) {
-				console.error('Failed to fetch posts:', error);
-			}
-		};
+    useEffect(() => {
+        const fetchChatRooms = async () => {
+            try {
+                const userData = await UserService.getCurrentUser();
+                const chatRoomsData = await UserService.getCurrentUserChatRooms();
+                console.log('Fetched chat rooms:', chatRoomsData);
+                if (chatRoomsData) {
+                    setChatRooms(chatRoomsData);
+                }
+            } catch (error) {
+                console.error('Failed to fetch chat rooms:', error);
+            }
+        };
 
-		fetchPosts();
-	}, []);
+        fetchChatRooms();
+    }, []);
 
-	return (
-		<section className="Mystory_container">
-			<StoryInfo />
-			<Storys board={board} />
-		</section>
-	);
+    return (
+        <section className="Mystory_container">
+            <StoryInfo />
+            <Storys chatRooms={chatRooms} />
+        </section>
+    );
 }
 
-function Storys({ board }) {
-	return board.map((el) => (
-		<div className="MyStory" key={el.post_idx}>
-			<span className="story_number story_child">{el.post_idx}</span>
-			<span className="story_name story_child">{el.nickname}</span>
-			<Link to={`/Read=${el.post_idx}`}>
-				<span className="story_title story_child">
-					{el.title.length < 25 ? el.title : `${el.title.substr(0, 25)}...`}
-				</span>
-			</Link>
-			<span className="story_time story_child">{el.date.substr(0, 10)}</span>
-		</div>
-	));
+function Storys({ chatRooms }) {
+    return chatRooms.map((room) => (
+        <div className="MyStory" key={room.id}>
+            <span className="story_number story_child">{room.id}</span>
+            <span className="story_name story_child">{room.postUserName || 'Unknown'}</span> {/* 작성자 이름 */}
+            <Link to={`/Chat/${room.id}`}>
+                <span className="story_title story_child">
+                    {room.name}
+                </span>
+            </Link>
+            <span className="story_time story_child">{room.postTitle || 'Unknown'}</span> {/* 게시글 제목 */}
+        </div>
+    ));
 }
 
 function StoryInfo() {
-	return (
-		<div className="story storyInfo">
-			<span className="story_number story_child">번호</span>
-			<span className="story_title story_child">게시글 제목</span>
-			<span className="story_name story_child">작성자</span>
-			<span className="story_time story_child">작성일</span>
-		</div>
-	);
+    return (
+        <div className="story storyInfo">
+            <span className="story_number story_child">번호</span>
+            <span className="story_title story_child">채팅방 제목</span>
+            <span className="story_name story_child">작성자</span>
+            <span className="story_time story_child">게시글 제목</span>
+        </div>
+    );
 }
 
-export default MyStory;
+export default MyChat;

@@ -4,6 +4,7 @@ import { faPen } from '@fortawesome/free-solid-svg-icons';
 import { Link, useNavigate } from 'react-router-dom';
 import ImgModal from '../ImgModal';
 import AuthService from '../../service/AuthService';
+import UserService from '../../service/UserService'; // UserService를 임포트
 import defaultProfileImage from '../../assets/images/default-profile.png';
 import postImage from '../../assets/images/post.png';
 import chatImage from '../../assets/images/chat.png';
@@ -21,27 +22,13 @@ function MyPageProfile({ userId, onComponentChange }) {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const accessToken = localStorage.getItem('accessToken');
-                if (!accessToken) {
-                    throw new Error('No access token found');
-                }
-                const response = await fetch(`/members/get/${userId}`, {
-                    method: 'GET',
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                });
-                const contentType = response.headers.get('content-type');
-                if (!response.ok || !contentType || !contentType.includes('application/json')) {
-                    throw new Error(`Failed to fetch user data, received: ${contentType}`);
-                }
-                const result = await response.json();
+                const userData = await UserService.getCurrentUser(); // UserService를 통해 현재 사용자 데이터 가져오기
                 setUser({
-                    name: result.data.name,
-                    description: result.data.intro,
-                    imgSrc: result.data.imgSrc || defaultProfileImage,
+                    name: userData.name,
+                    description: userData.intro,
+                    imgSrc: userData.imgSrc || defaultProfileImage,
                 });
-                if (userId === result.data.id) {
+                if (userId === userData.id) {
                     setIsAdmin(true);
                 }
             } catch (error) {

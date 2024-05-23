@@ -77,7 +77,7 @@ function NavBar() {
 					</Link>
 				</div>
 				<div className="navLogo">
-					<Link to="/posts" style={{ textDecoration: 'none' }}>
+					<Link to="/posts/list" style={{ textDecoration: 'none' }}>
 						ERaM
 					</Link>
 				</div>
