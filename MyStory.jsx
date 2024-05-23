@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/Story/MyStory.scss';
-import UserService from '../../service/UserService';
+import UserService from '../../service/UserService'; // UserService를 임포트
 
-function MyStory({ userId }) {
+function MyStory() {
     const [board, setBoard] = useState([]);
     const [user, setUser] = useState(null);
 
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const userData = await UserService.getUser(userId);
+                const userData = await UserService.getCurrentUser();
                 setUser(userData);
                 const postsData = await UserService.getCurrentUserPosts();
                 console.log('Fetched posts:', postsData);
@@ -23,11 +23,12 @@ function MyStory({ userId }) {
         };
 
         fetchPosts();
-    }, [userId]);
+    }, []);
 
     return (
         <section className="Mystory_container">
-            <StoryInfo user={user} />
+          
+            <StoryInfo />
             <Storys board={board} />
         </section>
     );
@@ -48,14 +49,13 @@ function Storys({ board }) {
     ));
 }
 
-function StoryInfo({ user }) {
+function StoryInfo() {
     return (
         <div className="story storyInfo">
             <span className="story_number story_child">번호</span>
             <span className="story_title story_child">게시글 제목</span>
             <span className="story_name story_child">작성자</span>
             <span className="story_time story_child">작성일</span>
-            {user && <span className="story_name story_child">{user.name}</span>}
         </div>
     );
 }
