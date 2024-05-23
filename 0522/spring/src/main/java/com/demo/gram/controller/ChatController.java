@@ -9,6 +9,7 @@ import com.demo.gram.entity.Members;
 import com.demo.gram.repository.ChatMessageRepository;
 import com.demo.gram.repository.ChatRoomRepository;
 import com.demo.gram.repository.MembersRepository;
+import com.demo.gram.repository.PostRepository;
 import com.demo.gram.security.util.JWTUtil;
 import com.demo.gram.service.MembersService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -33,6 +35,7 @@ import java.util.stream.Collectors;
 @Log4j2
 public class ChatController {
 
+  private final PostRepository postRepository;
   private final ChatRoomRepository chatRoomRepository;
   private final ChatMessageRepository chatMessageRepository;
   private final MembersRepository membersRepository;
@@ -75,8 +78,21 @@ public class ChatController {
 
   @GetMapping("/room/by-post/{postId}")
   public ResponseEntity<String> getChatRoomByPostId(@PathVariable Long postId) {
-    ChatRoom chatRoom = chatRoomRepository.findByPostId(postId)
-        .orElseThrow(() -> new RuntimeException("No chat room associated with the provided post ID"));
+    Optional<ChatRoom> chatRoomOptional = chatRoomRepository.findByPostId(postId);
+
+    ChatRoom chatRoom;
+    if (chatRoomOptional.isPresent()) {
+      chatRoom = chatRoomOptional.get();
+    } else {
+      // 채팅방이 없을 경우 새로 생성
+      chatRoom = new ChatRoom();
+      chatRoom.setPost(postRepository.findById(postId)
+              .orElseThrow(() -> new RuntimeException("Post not found")));
+      chatRoom.setName("Chat Room for Post " + postId);
+      chatRoom.setCreatedAt(LocalDateTime.now());
+      chatRoomRepository.save(chatRoom);
+    }
+
     ChatRoomResponse response = new ChatRoomResponse(chatRoom.getId(), postId);
     return ResponseEntity.ok(convertToJson(response));
   }

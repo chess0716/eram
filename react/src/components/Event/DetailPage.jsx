@@ -174,7 +174,7 @@ function DetailPage() {
 	};
 
 	const navigateToPosts = () => {
-		navigate('/posts');
+		navigate('/posts/list');
 	};
 
 	if (!sport) {

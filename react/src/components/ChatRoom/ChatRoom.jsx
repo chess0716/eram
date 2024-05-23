@@ -13,8 +13,9 @@ import {
   ConversationList,
   Conversation,
 } from '@chatscope/chat-ui-kit-react';
-import { getChatRoomByPostId, getMessagesByRoomId, getMembersByRoomId } from '../../service/ChatService';
+import { getChatRoomByPostId, getMessagesByRoomId, getChatRoomMembers } from '../../service/ChatService';
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
+import styles from './CustomChatStyle.module.css'; // CSS 모듈을 임포트합니다.
 
 function ChatRoom() {
   const { postId } = useParams();
@@ -23,6 +24,8 @@ function ChatRoom() {
   const [chatRoomId, setChatRoomId] = useState(null);
   const clientRef = useRef(null);
   const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const setupWebSocket = (roomId) => {
     if (clientRef.current) {
@@ -69,26 +72,36 @@ function ChatRoom() {
     const loadChatRoom = async () => {
       try {
         const { data: roomData } = await getChatRoomByPostId(postId);
+        console.log('roomData:', roomData);
         if (roomData.chatRoomId) {
           setChatRoomId(roomData.chatRoomId);
 
-          const { data: membersData } = await getMembersByRoomId(roomData.chatRoomId);
+          const { data: membersData } = await getChatRoomMembers(roomData.chatRoomId);
+          console.log('membersData:', membersData);
           setMembers(membersData);
 
           const token = localStorage.getItem('accessToken');
-          if (token) {
+          if (token && membersData) {
             const decodedToken = jwtDecode(token);
             const email = decodedToken.sub;
             const user = membersData.find((member) => member.email === email);
             if (user) {
               setCurrentUser(user);
+            } else {
+              console.warn('User not found in chat room members, setting as unknown');
+              setCurrentUser({ name: 'unknown', mno: -1 });
             }
           }
         } else {
           console.error('Chat room not found for the provided post ID');
+          setError('Chat room not found for the provided post ID');
         }
       } catch (error) {
         console.error('Error fetching chat room:', error);
+        setError('Error fetching chat room');
+        setCurrentUser({ name: 'unknown', mno: -1 });
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -106,6 +119,7 @@ function ChatRoom() {
       const loadMessages = async () => {
         try {
           const { data: messagesData } = await getMessagesByRoomId(chatRoomId);
+          console.log('messagesData:', messagesData);
           setMessages(
             messagesData.map((msg) => ({
               ...msg,
@@ -115,6 +129,7 @@ function ChatRoom() {
           );
         } catch (error) {
           console.error('Error fetching messages:', error);
+          setError('Error fetching messages');
         }
       };
 
@@ -138,40 +153,71 @@ function ChatRoom() {
           destination: `/app/chat/${chatRoomId}/send`,
           body: JSON.stringify(messageData),
         });
-        // 메시지를 직접 추가하지 않음
       } catch (error) {
         console.error('Error sending message:', error);
       }
     }
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error && !currentUser) {
+    return <div>{error}</div>;
+  }
+
+  if (!chatRoomId || !currentUser) {
+    return <div>Chat room or user not found</div>;
+  }
+
   return (
-    <div className="container">
-      <MainContainer className="main-container">
-        <Sidebar position="left" scrollable className="custom-sidebar">
-          <ConversationList>
-            {members.map((member) => (
-              <Conversation key={member.mno} name={member.name}>
-                {/* <Avatar name={member.name} /> */}
-              </Conversation>
-            ))}
-          </ConversationList>
+    <div className={styles.container}>
+      <MainContainer className={styles.mainContainer}>
+        <Sidebar position="left" scrollable className={styles.customSidebar}>
+          <div className={styles.sidebarHeader}>사용자 목록</div>
+          <div className={styles.sidebarContent}>
+            <ConversationList>
+              {members && members.length > 0 ? (
+                members.map((member, index) => (
+                  <Conversation key={index} name={member.name}>
+                    {/* <Avatar name={member.name} /> */}
+                  </Conversation>
+                ))
+              ) : (
+                <Conversation name="No members found" />
+              )}
+            </ConversationList>
+          </div>
         </Sidebar>
-        <ChatContainer className="custom-chat-container">
-          <MessageList>
-            {messages.map((msg, index) => (
+        <ChatContainer className={styles.customChatContainer}>
+          <MessageList className={styles.messageList}>
+            {messages && messages.length > 0 ? (
+              messages.map((msg, index) => (
+                <Message
+                  key={index}
+                  model={{
+                    message: `${msg.senderName}  : ${msg.message}`,
+                    direction: msg.direction,
+                    sender: msg.senderName,
+                    position: 'normal',
+                  }}
+                  className={styles.customMessage} // customMessage 클래스를 추가합니다.
+                />
+              ))
+            ) : (
               <Message
-                key={index}
                 model={{
-                  message: `${msg.senderName}: ${msg.message}`,
-                  direction: msg.direction,
-                  sender: msg.senderName,
+                  message: 'No messages found',
+                  direction: 'incoming',
+                  sender: 'System',
                   position: 'normal',
                 }}
+                className={styles.customMessage} // customMessage 클래스를 추가합니다.
               />
-            ))}
+            )}
           </MessageList>
-          <MessageInput placeholder="Type message here" onSend={sendMessage} />
+          <MessageInput placeholder="Type message here" onSend={sendMessage} className={styles.messageInputContainer} />
         </ChatContainer>
       </MainContainer>
     </div>

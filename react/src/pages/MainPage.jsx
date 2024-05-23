@@ -17,7 +17,7 @@ function MainPage() {
     async function fetchUserId() {
       try {
         const userData = await UserService.getCurrentUser();
-        UserStore.setNickname(userData.nickname);
+        UserStore.setName(userData.id);  
         UserStore.setEmail(userData.id);
         if (userData.profile !== null) {
           UserStore.setImgSrc(userData.profile);

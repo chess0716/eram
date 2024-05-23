@@ -5,10 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRotateRight } from '@fortawesome/free-solid-svg-icons';
 
 function Story({ posts, searchKeyword, searchWritings, setSearchWritings }) {
-  return <Storys posts={posts} searchKeyword={searchKeyword} searchWritings={searchWritings} setSearchWritings={setSearchWritings} />;
+  return <StoryContent posts={posts} searchKeyword={searchKeyword} searchWritings={searchWritings} setSearchWritings={setSearchWritings} />;
 }
 
-function Storys({ posts, searchKeyword, searchWritings, setSearchWritings }) {
+function StoryContent({ posts, searchKeyword, searchWritings, setSearchWritings }) {
   const [board, setBoard] = useState(posts);
   const [page, setPage] = useState([]);
   const [boardCount, setBoardCount] = useState(0);
@@ -68,15 +68,15 @@ function Storys({ posts, searchKeyword, searchWritings, setSearchWritings }) {
         </div>
         <StoryInfo />
         {board.map((el) => (
-          <div className="story" key={el.post_idx}>
-            <span className="story_number story_child">{el.post_idx}</span>
-            <span className="story_name story_child">{el.nickname}</span>
-            <Link to={`/posts/${el.post_idx}`}>
+          <div className="story" key={el.id}>
+            <span className="story_number story_child">{el.id}</span>
+            <span className="story_name story_child">{el.user ? el.user.id : 'Unknown User'}</span>
+            <Link to={`/posts/${el.id}`}>
               <span className="story_title story_child">
                 {el.title.length < 25 ? el.title : `${el.title.slice(0, 25)}...`}
               </span>
             </Link>
-            <span className="story_time story_child">{el.date ? el.date.slice(0, 10) : ''}</span>
+            <span className="story_time story_child">{el.createdAt ? el.createdAt.slice(0, 10) : 'Unknown Date'}</span>
           </div>
         ))}
       </div>
@@ -118,13 +118,13 @@ function Storys({ posts, searchKeyword, searchWritings, setSearchWritings }) {
         </div>
         <StoryInfo />
         {searchWritings.map((el) => (
-          <div className="story" key={el.post_idx}>
-            <span className="story_number story_child">{el.post_idx}</span>
-            <span className="story_name story_child asdf">{el.nickname}</span>
-            <Link to={`Read=${el.post_idx}`}>
+          <div className="story" key={el.id}>
+            <span className="story_number story_child">{el.id}</span>
+            <span className="story_name story_child">{el.user ? el.user.id : 'Unknown User'}</span>
+            <Link to={`/posts/${el.id}`}>
               <span className="story_title story_child">{el.title}</span>
             </Link>
-            <span className="story_time story_child">{el.date ? el.date.slice(0, 10) : ''}</span>
+            <span className="story_time story_child">{el.createdAt ? el.createdAt.slice(0, 10) : 'Unknown Date'}</span>
           </div>
         ))}
       </div>
@@ -146,4 +146,4 @@ function StoryInfo() {
   );
 }
 
-export default Story;
+export default StoryContent;

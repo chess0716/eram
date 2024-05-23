@@ -1,3 +1,18 @@
+/* CustomChatStyle.module.css */
+
+/* 웹폰트 정의 */
+@font-face {
+  font-family: 'Ownglyph_eunbyul21-Rg';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2405-2@1.0/Ownglyph_eunbyul21-Rg.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* 전역 폰트 적용 */
+body {
+  font-family: 'Ownglyph_eunbyul21-Rg';
+}
+
 .container {
   display: flex;
   justify-content: center;
@@ -15,9 +30,44 @@
 }
 
 .customSidebar {
-  width: 50px !important; /* 사용자 목록을 매우 작게 줄이기 */
+  width: 200px !important; /* 사용자 목록 너비 설정 */
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebarHeader {
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+  font-weight: bold;
+}
+
+.sidebarContent {
+  flex-grow: 1;
+  overflow-y: auto; /* 스크롤 설정 */
 }
 
 .customChatContainer {
   flex-grow: 1; /* 남은 공간을 모두 차지하도록 설정 */
+  display: flex;
+  flex-direction: column;
+}
+
+/* 텍스트 스타일 커스터마이징 */
+.messageList {
+  flex-grow: 1;
+  overflow-y: auto; /* 스크롤을 설정 */
+  font-family: 'Ownglyph_eunbyul21-Rg'; /* 폰트 적용 */
+}
+
+.messageInputContainer {
+  padding: 10px;
+  border-top: 1px solid #ccc;
+  font-family: 'Ownglyph_eunbyul21-Rg';/* 폰트 적용 */
+}
+
+.cs-message__content, .cs-message__html-content {
+  font-family: 'Ownglyph_eunbyul21-Rg'; /* 폰트 적용 */
+  font-weight: bold; /* 텍스트 두껍게 */
 }

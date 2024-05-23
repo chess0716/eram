@@ -39,12 +39,12 @@ function App() {
             <Route path="/auth/login" element={<AuthForm />} />
             <Route path="/main" element={<Places />} />
             <Route path="/details/:index" element={<DetailPage />} />
-            <Route path="/posts" element={<MainPage />} />
+            <Route path="/posts/list" element={<MainPage />} />
             <Route path="/posts/:id" element={<Read />} /> {/* Update Read route */}
             <Route path="/search=:keyword" element={<MainPage />} />
           </Route>
           <Route element={<NavBar2 />}>
-            <Route path="/user/:id" element={<MyPage />} />
+            <Route path="/user/:name" element={<MyPage />} />
             <Route path="/page=:pageNum/Read=:id" element={<Read />} />
             <Route path="/Read=:id" element={<Read />} />
             <Route path="/Writing" element={<Writing />} />

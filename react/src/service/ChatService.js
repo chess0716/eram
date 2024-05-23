@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:8005'; // Backend server URL
+const BASE_URL = 'http://localhost:8005'; // Spring Boot 서버의 포트
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -9,14 +9,37 @@ const axiosInstance = axios.create({
   }
 });
 
-export const getChatRoomByPostId = (postId) => 
-  axiosInstance.get(`/chat/room/by-post/${postId}`);
+export const getChatRoomByPostId = (postId) => {
+  if (!postId) {
+    throw new Error('Post ID is undefined');
+  }
+  return axiosInstance.get(`/chat/room/by-post/${postId}`);
+};
 
-export const getMessagesByRoomId = (chatRoomId) => 
-  axiosInstance.get(`/chat/messages/${chatRoomId}`);
+export const createChatRoom = (postId) => {
+  if (!postId) {
+    throw new Error('Post ID is undefined');
+  }
+  return axiosInstance.post(`/chat/room`, { postId }); // URL 수정
+};
 
-export const sendMessageToRoom = (chatRoomId, message) => 
-  axiosInstance.post(`/chat/${chatRoomId}/send`, message);
+export const getMessagesByRoomId = (chatRoomId) => {
+  if (!chatRoomId) {
+    throw new Error('Chat Room ID is undefined');
+  }
+  return axiosInstance.get(`/chat/messages/${chatRoomId}`);
+};
 
-export const getMembersByRoomId = (chatRoomId) => 
-  axiosInstance.get(`/chat/chatroom/${chatRoomId}/user`);
+export const sendMessageToRoom = (chatRoomId, message) => {
+  if (!chatRoomId) {
+    throw new Error('Chat Room ID is undefined');
+  }
+  return axiosInstance.post(`/chat/${chatRoomId}/send`, message);
+};
+
+export const getChatRoomMembers = (chatRoomId) => {
+  if (!chatRoomId) {
+    throw new Error('Chat Room ID is undefined');
+  }
+  return axiosInstance.get(`/chat/chatroom/${chatRoomId}/user`); // URL 수정
+};

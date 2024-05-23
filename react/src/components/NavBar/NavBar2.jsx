@@ -5,7 +5,7 @@ import { faCircleUser, faRightFromBracket } from '@fortawesome/free-solid-svg-ic
 import { Link, Outlet, useLocation } from 'react-router-dom';
 
 import store from '../../store';
-import AuthService from '../Profile/AuthService';
+import AuthService from '../../service/AuthService';
 
 function NavBar2() {
 	const { UserStore } = store();

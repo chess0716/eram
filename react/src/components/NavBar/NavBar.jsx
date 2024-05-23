@@ -5,7 +5,7 @@ import { faCircleUser, faRightFromBracket, faRightToBracket, faUserPlus } from '
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import store from '../../store';
 import defaultImage from '../../assets/images/default-profile.png';
-import AuthService from '../Profile/AuthService';
+import AuthService from '../../service/AuthService';
 
 function NavBar() {
 	const { UserStore } = store();

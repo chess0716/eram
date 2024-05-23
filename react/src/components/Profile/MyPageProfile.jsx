@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
 import { Link, useNavigate } from 'react-router-dom';
 import UserStore from '../../store';
-import AuthService from './AuthService';
+import AuthService from '../../service/AuthService';
 import defaultProfileImage from '../../assets/images/default-profile.png';
 import postImage from '../../assets/images/post.png';
 import chatImage from '../../assets/images/chat.png';

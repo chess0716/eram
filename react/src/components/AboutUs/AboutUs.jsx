@@ -1,5 +1,5 @@
-import React from "react";
-import styles from "./AboutUs.module.css"; // 모듈 CSS import
+import React from 'react';
+import styles from './AboutUs.module.css'; // 모듈 CSS import
 
 const AboutUs = () => (
   <div className={styles.about}>
